@@ -1,0 +1,32 @@
+name: "servidor principal de terraform"
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - 'terraform/provider.tf'
+    - 'terraform/test.tf'
+jobs:
+  construirServidorTerraform:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./terraform
+    steps:
+      - name: checkout codigo
+        uses: actions/checkout@v4
+# 👇 ESTE ES EL PASO QUE FALTA: Instala la herramienta en el runner
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.0" # Puedes cambiarla por la versión que gustes
+      - name: terraform init
+        run: terraform init
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.MAIN_TERRAFORM_ACCESSKEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.MAIN_TERRAFORM_SECRETACCESSKEY }}
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.MAIN_TERRAFORM_ACCESSKEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.MAIN_TERRAFORM_SECRETACCESSKEY }}
