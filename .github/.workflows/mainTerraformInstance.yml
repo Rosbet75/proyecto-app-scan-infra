@@ -15,6 +15,11 @@ jobs:
     steps:
       - name: checkout codigo
         uses: actions/checkout@v4
+# 👇 ESTE ES EL PASO QUE FALTA: Instala la herramienta en el runner
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.0" # Puedes cambiarla por la versión que gustes
       - name: terraform init
         run: terraform init
         env:
