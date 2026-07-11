@@ -3,6 +3,11 @@ on:
   push:
     branches:
       - main
+permissions: 
+  contents: read 
+  id-token: write 
+  issues: write 
+  pull-requests: write
 jobs:
   scanPipeline:
     runs-on: ubuntu-latest
@@ -15,8 +20,20 @@ jobs:
         with:
           framework: terraform
       
-      - name: trufflehog oss
-        uses: trufflesecurity/trufflehog-main-action@main
-        with:
-          path: ./
-          base: ${{ github.event.repository.default_branch }}
+      # - name: trufflehog oss
+      #   uses: trufflesecurity/trufflehog-main-action@main
+      #   with:
+      #     path: ./
+      #     base: ${{ github.event.repository.default_branch }}
+      - name: TruffleHog OSS 
+        id: trufflehog 
+        uses: trufflesecurity/trufflehog@add-actions-cli-switch 
+        continue-on-error: true 
+        with: 
+          path: ./ 
+          base: "${{ github.event.repository.default_branch }}" 
+          head: HEAD 
+          extra_args: --debug --only-verified
+      - name: Scan Results Status 
+        if: steps.trufflehog.outcome == 'failure' 
+        run: exit 1
