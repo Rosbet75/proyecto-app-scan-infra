@@ -1,0 +1,22 @@
+name: "escaneo de archivos de terraform"
+on: 
+  push:
+    branches:
+      - main
+jobs:
+  scanPipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout de codigo
+        uses: actions/checkout@v4
+      
+      - name: run checkov (IaC scan)
+        uses: bridgecrewio/checkov-action@master
+        with:
+          framework: terraform
+      
+      - name: trufflehog oss
+        uses: trufflesecurity/trufflehog-main-action@main
+        with:
+          path: ./
+          base: ${{ github.event.repository.default_branch }}

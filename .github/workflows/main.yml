@@ -1,6 +1,7 @@
 name: "servidor principal de terraform"
 on:
   push:
+  
     branches:
     - main
     paths:
@@ -26,8 +27,13 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.MAIN_TERRAFORM_ACCESSKEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.MAIN_TERRAFORM_SECRETACCESSKEY }}
+          TF_VAR_clave_ssh_publica: ${{ secrets.CLAVE_SSH }}
       - name: Terraform Apply
         run: terraform apply -auto-approve
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.MAIN_TERRAFORM_ACCESSKEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.MAIN_TERRAFORM_SECRETACCESSKEY }}
+          TF_VAR_clave_ssh_publica: ${{ secrets.CLAVE_SSH }}
+      - name: agregar claves de acceso
+        run: ""
+        
